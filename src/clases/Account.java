@@ -4,19 +4,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Account {
-    private static int contador = 0;
+    private static int contador;
     private static List<Account> cuentas = new ArrayList<>();
+
     private final int id;
     private String username;
     private double saldoactual;
+    private List<Transaction> transacciones;
 
     public Account(String username, double saldoactual) {
         this.id = ++contador;
         this.username = username;
         this.saldoactual = saldoactual;
+        this.transacciones = new ArrayList<>();
         cuentas.add(this);
+
+        if (saldoactual > 0) {
+            this.transacciones.add(new Transaction("DEPOSITO", saldoactual));
+        }
     }
 
+    public void depositar(double monto) {
+        saldoactual += monto;
+        transacciones.add(new Transaction("DEPOSITO", monto));
+    }
+
+    public void retirar(double monto) {
+        if (monto <= saldoactual) {
+            saldoactual -= monto;
+            transacciones.add(new Transaction("RETIRO", monto));
+        } else {
+            System.out.println("Saldo insuficiente.");
+        }
+    }
+
+    public List<Transaction> getTransacciones() {
+        return transacciones;
+    }
 
     public static Account search(String username) {
         for (Account acc : cuentas) {
@@ -39,16 +63,8 @@ public class Account {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public double getSaldoactual() {
         return saldoactual;
-    }
-
-    public void setSaldoactual(double saldoactual) {
-        this.saldoactual = saldoactual;
     }
 
     @Override
@@ -59,7 +75,4 @@ public class Account {
                 ", saldoactual: " + saldoactual +
                 '}';
     }
-
-
-
 }

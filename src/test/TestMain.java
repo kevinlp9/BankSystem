@@ -2,7 +2,6 @@ package test;
 
 import clases.Account;
 import clases.Transaction;
-
 import java.util.Scanner;
 
 public class TestMain {
@@ -11,6 +10,7 @@ public class TestMain {
         int opcion, opc;
         double monto;
         String username;
+
         do {
             System.out.println("Bank System");
             System.out.println("--------------");
@@ -19,52 +19,58 @@ public class TestMain {
             System.out.println("2. Create Account");
             System.out.println("3. Exit");
             opcion = sc.nextInt();
+
             switch (opcion) {
                 case 1:
                     System.out.println("Ingrese su usuario: ");
                     username = sc.next();
                     Account cuenta = Account.search(username);
+
                     if (cuenta != null) {
                         System.out.println("Bienvenido, " + cuenta.getUsername() + "!");
                         System.out.println("Tu saldo actual es: $" + cuenta.getSaldoactual());
                         System.out.println("--------------------------------");
-                        System.out.println("Ingrese la opcion deseada: ");
-                        System.out.println("1. Depositar ");
-                        System.out.println("2. Retirar ");
-                        System.out.println("3. Detalles de la cuenta");
-                        opc=sc.nextInt();
-                        switch (opc) {
-                            case 1:
-                                System.out.println("Ingrese el monto a depositar: ");
-                                monto = sc.nextDouble();
-                                cuenta.setSaldoactual(cuenta.getSaldoactual() + monto);
-                                Transaction deposito = new Transaction(monto, 0);
-                                System.out.println("Depósito realizado: " + deposito);
-                                System.out.println("Nuevo saldo: $" + cuenta.getSaldoactual());
-                                break;
 
-                            case 2:
-                                System.out.println("Ingrese el monto a retirar: ");
-                                monto = sc.nextDouble();
-                                if (monto <= cuenta.getSaldoactual()) {
-                                    cuenta.setSaldoactual(cuenta.getSaldoactual() - monto);
-                                    Transaction retiro = new Transaction(0, monto);
-                                    System.out.println("Retiro realizado: " + retiro);
+                        do {
+                            System.out.println("Ingrese la opcion deseada: ");
+                            System.out.println("1. Depositar ");
+                            System.out.println("2. Retirar ");
+                            System.out.println("3. Detalles de la cuenta");
+                            System.out.println("4. Historial de transacciones");
+                            System.out.println("5. Exit");
+                            opc = sc.nextInt();
+                            switch (opc) {
+                                case 1:
+                                    System.out.println("Ingrese el monto a depositar: ");
+                                    monto = sc.nextDouble();
+                                    cuenta.depositar(monto);
+                                    System.out.println("Depósito exitoso. Nuevo saldo: $" + cuenta.getSaldoactual());
+                                    break;
+
+                                case 2:
+                                    System.out.println("Ingrese el monto a retirar: ");
+                                    monto = sc.nextDouble();
+                                    cuenta.retirar(monto);
                                     System.out.println("Nuevo saldo: $" + cuenta.getSaldoactual());
-                                } else {
-                                    System.out.println("Saldo insuficiente.");
-                                }
-                                break;
+                                    break;
 
-                            case 3:
-                                System.out.println(" " + cuenta);
-                                break;
-                        }
-                    }else {
-                        System.out.println("No existen cuentas");
-                        return;
+                                case 3:
+                                    System.out.println("" + cuenta);
+                                    break;
+
+                                case 4:
+                                    System.out.println("Historial de transacciones:");
+                                    for (Transaction t : cuenta.getTransacciones()) {
+                                        System.out.println(t);
+                                    }
+                                    break;
+                            }
+                        }while (opc!=5);
+                    } else {
+                        System.out.println("Usuario no encontrado.");
                     }
                     break;
+
                 case 2:
                     System.out.println("Ingrese su usuario: ");
                     username = sc.next();
@@ -79,6 +85,7 @@ public class TestMain {
                     break;
             }
         } while (opcion!=3);
-        System.out.println("EXIT");
+        System.out.println("Saliendo...");
+        return;
     }
 }
